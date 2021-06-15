@@ -64,7 +64,7 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 static volatile uint8_t buffer[BUFFER_SIZE];
 static volatile uint8_t head, tail;
 static volatile uint8_t sendBits, msg, bitCount, setBits;
-
+const uint8_t kCapsLock = 57;
 KeyReport report;
 uint8_t K[255], KE[255];
 uint8_t leds;
@@ -116,7 +116,7 @@ void setupKeymaps() {
   K[0x66] = 42;
   K[0x29] = 44;
   K[0x0D] = 43;
-  K[0x58] = 57; // CAPS Lock -> Caps lock
+  K[0x58] = kCapsLock; // CAPS Lock -> Caps lock
   // K[0x58] = 41; // CAPS Lock -> ESC
   K[0x12] = 225;
   K[0x14] = 224;
@@ -317,13 +317,23 @@ void sendMessage(uint8_t m) {
   interrupts();
 }
 
-void send_example_emoji() {
-  //Keyboard.press(ALT);
-  //Keyboard.print(d83dde00);
-  //Keyboard.release(ALT);
+
+// Emulate linux process of sending emoji.
+// Send CTRL/SHIFT/U combo press, then release, and then send the code followed by space. 
+void send_emoji(){
+  Keyboard.press(KEY_LEFT_CTRL);
+  Keyboard.press(KEY_LEFT_SHIFT);
+  Keyboard.press('u');
+
+  Keyboard.release(KEY_LEFT_CTRL);
+  Keyboard.release(KEY_LEFT_SHIFT);
+  Keyboard.release('u');
+  Keyboard.print("1f4a9");
+  Keyboard.print(" ");
 }
 
 bool caps_lock_pressed = false;
+bool sent_emoji = false;
 
 void loop() {
   if (interrupted) { tft.println("interrupted");}
@@ -355,7 +365,13 @@ void loop() {
 
         if (k2){
           if (brk){
-            removeFromReport(k2);
+            if (k2 == kCapsLock) {
+              tft.println("Caps lock released!");
+              send_emoji();
+              caps_lock_pressed = false;
+            } else {
+              removeFromReport(k2);
+            }
             if (k2 == 83 || k2 == 71){
               isSendLeds = true;
               if (k2 == 83) {
@@ -366,7 +382,12 @@ void loop() {
               sendMessage(0xED);
             }
           } else {
-            addToReport(k2);
+            if (k2 == kCapsLock) {
+              tft.println("Caps lock pressed!");
+              caps_lock_pressed = true;
+            } else {
+              addToReport(k2);
+            }
           }
           sendReport();
         }
