@@ -1,6 +1,8 @@
 /**
  * The PS/2 to USB keyboard converter based on DorianRudolph's work
  * @see https://gist.github.com/DorianRudolph/ca283dfdfd185bc812b7
+ * 
+ * MIT licensed: https://screenshot.googleplex.com/aT7TCreYpRr
  *
  */
 
@@ -247,9 +249,6 @@ void setupPS2() {
 
 void setup() {
   tft.begin();
-
-
-
   tft.setRotation(2);
   // Clear the screen. 
   tft.fillScreen(ILI9341_BLACK);
@@ -314,6 +313,13 @@ void sendMessage(uint8_t m) {
   digitalWrite(DATA_PIN, LOW);
   interrupts();
 }
+
+void send_example_emoji() {
+  Keyboard.press(ALT);
+  Keyboard.print(d83dde00);
+  Keyboard.release(ALT);
+}
+
 
 void loop() {
   if (interrupted) { tft.println("interrupted");}
