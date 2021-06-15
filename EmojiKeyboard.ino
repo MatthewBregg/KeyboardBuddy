@@ -70,6 +70,8 @@ uint8_t K[255], KE[255];
 uint8_t leds;
 bool isSendLeds;
 
+// Codes from https://github.com/arduino-libraries/USBHost/blob/master/src/hidboot.h#L112
+
 void setupKeymaps() {
   K[0x1C] = 4;
   K[0x32] = 5;
@@ -114,7 +116,8 @@ void setupKeymaps() {
   K[0x66] = 42;
   K[0x29] = 44;
   K[0x0D] = 43;
-  K[0x58] = 227; //CAPS 57
+  K[0x58] = 57; // CAPS Lock -> Caps lock
+  // K[0x58] = 41; // CAPS Lock -> ESC
   K[0x12] = 225;
   K[0x14] = 224;
   K[0x11] = 226;
@@ -315,11 +318,12 @@ void sendMessage(uint8_t m) {
 }
 
 void send_example_emoji() {
-  Keyboard.press(ALT);
-  Keyboard.print(d83dde00);
-  Keyboard.release(ALT);
+  //Keyboard.press(ALT);
+  //Keyboard.print(d83dde00);
+  //Keyboard.release(ALT);
 }
 
+bool caps_lock_pressed = false;
 
 void loop() {
   if (interrupted) { tft.println("interrupted");}
@@ -352,14 +356,12 @@ void loop() {
         if (k2){
           if (brk){
             removeFromReport(k2);
-            if (k2 == 83 || k2 == 71 || k2 == 57){
+            if (k2 == 83 || k2 == 71){
               isSendLeds = true;
               if (k2 == 83) {
                 leds ^= 2;
               } else if (k2 == 71) {
                 leds ^= 1;
-              } else if (k2 == 57) {
-                leds ^= 4;
               }
               sendMessage(0xED);
             }
