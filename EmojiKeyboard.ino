@@ -320,6 +320,7 @@ void sendMessage(uint8_t m) {
 
 // Emulate linux process of sending emoji.
 // Send CTRL/SHIFT/U combo press, then release, and then send the code followed by space. 
+// See codes from https://unicode-table.com/en/1F4AA/.
 void send_emoji(){
   Keyboard.press(KEY_LEFT_CTRL);
   Keyboard.press(KEY_LEFT_SHIFT);
@@ -328,7 +329,8 @@ void send_emoji(){
   Keyboard.release(KEY_LEFT_CTRL);
   Keyboard.release(KEY_LEFT_SHIFT);
   Keyboard.release('u');
-  Keyboard.print("1f4a9");
+  //Keyboard.print("1f4a9"); // Poop
+  Keyboard.print("1f4AA"); // Strong arm.
   Keyboard.print(" ");
 }
 
