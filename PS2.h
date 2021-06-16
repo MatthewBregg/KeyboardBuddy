@@ -21,7 +21,6 @@ KeyReport report;
 uint8_t leds;
 bool isSendLeds;
 
-volatile bool interrupted = false;
 void PS2Interrupt(void) {
 
   static uint8_t bitcount = 0;

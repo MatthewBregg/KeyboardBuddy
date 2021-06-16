@@ -1,5 +1,8 @@
 
 const uint8_t kCapsLock = 57;
+const uint8_t kSemiColon = 51;
+const uint8_t kESC = 41;
+const uint8_t kEnter = 40;
 uint8_t K[255], KE[255];
 // Codes from https://github.com/arduino-libraries/USBHost/blob/master/src/hidboot.h#L112
 void setupKeymaps() {

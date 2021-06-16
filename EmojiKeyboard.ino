@@ -1,5 +1,7 @@
 #include "Display.h"
 #include "PS2.h"
+#include "LoadImages.h"
+#include "EmojiPickerUi.h"
 
 
 void setup() {
@@ -13,32 +15,76 @@ void setup() {
 
   Keyboard.begin();
   tft.println("loaded");
+
+  // Avoid constantly allocating/deallocating this.
+  emoji_name.reserve(26);
+
+  // // Initially the SD system
+  // // SD card is pretty straightforward, a single call...
+  // if(!SD.begin(5, SD_SCK_MHZ(25))) { // ESP32 requires 25 MHz limit
+  //   tft.println(F("SD begin() failed"));
+  //   for(;;); // Fatal error, do not continue
+  // } else {
+  //   tft.println(F("SD card loaded!"));
+  // }
+
+  // Give us time to display any remaining debug info.
   delay(1000);
+
 }
 
 
-// Emulate linux process of sending emoji.
-// Send CTRL/SHIFT/U combo press, then release, and then send the code followed by space. 
-// See codes from https://unicode-table.com/en/1F4AA/.
-void send_emoji(){
-  tft.println("sending emoji!");
-  Keyboard.press(KEY_LEFT_CTRL);
-  Keyboard.press(KEY_LEFT_SHIFT);
-  Keyboard.press('u');
+// Filter on key release.
+// Return true to passthrough, false to drop.
+bool key_pressed_in_mode(uint8_t key) {
+  if (key == kCapsLock) {
+    caps_lock_pressed = true;
+    return false;
+  }
+  if (caps_lock_pressed && key == kSemiColon) {
+    emoji_picker_mode = true;
+    init_emoji_picker();
+    render_emoji_picker();
+  }
 
-  Keyboard.release(KEY_LEFT_CTRL);
-  Keyboard.release(KEY_LEFT_SHIFT);
-  Keyboard.release('u');
-  //Keyboard.print("1f4a9"); // Poop
-  Keyboard.print("1f4AA"); // Strong arm.
-  Keyboard.print(" ");
+  if (emoji_picker_mode) {
+    return false;
+  }
+  // If not in emoji mode, or entering emoji mode, send the code.
+  return true;
 }
 
-bool caps_lock_pressed = false;
-bool sent_emoji = false;
+// Filter on key release.
+// Return true to passthrough, false to drop.
+bool key_released_in_mode(uint8_t key) {
+  if (key == kCapsLock) {
+    caps_lock_pressed = false;
+    if(!emoji_picker_mode) {
+      // If we didn't enter emoji mode, then send our caps lock.
+      Keyboard.press(KEY_CAPS_LOCK);
+    }
+    return false;
+  }
+  if (key == kESC && emoji_picker_mode) {
+    emoji_picker_mode = false;
+    clear_display();
+  }
+  if (key == kEnter && emoji_picker_mode) {
+    clear_display();
+    emoji_picker_mode = false;
+    send_emoji_do_lookup(emoji_name);
+    tft.println("Sent emoji!");
+  }
+  
+  if (emoji_picker_mode && key != kSemiColon) {
+    add_emoji_picker_key(key);
+    render_emoji_picker();
+    return false;
+  }
+  return true;
+}
 
 void loop() {
-  if (interrupted) { tft.println("interrupted");}
   uint8_t k = getScancode();
   uint8_t k2; 
   if (k) {
@@ -67,17 +113,7 @@ void loop() {
 
         if (k2){
           if (brk){
-            if (k2 == kCapsLock) {
-              tft.println("Caps lock released!");
-              send_emoji();
-              caps_lock_pressed = false;
-            } else {
-              // Sending a normal character
-              // HACK: Adding 93 will align k2 with normal ascii for ONLY a-z.
-              // Can use this to send chars to the emoji picker!
-              // Add here to send char on release, add to the "addToReport" line
-              // to send char on press (and repeat).
-              tft.print(char(k2+93));
+            if (key_released_in_mode(k2)) {
               removeFromReport(k2);
             }
             if (k2 == 83 || k2 == 71){
@@ -85,10 +121,7 @@ void loop() {
               // so just remove it and do nothing here. 
             }
           } else {
-            if (k2 == kCapsLock) {
-              tft.println("Caps lock pressed!");
-              caps_lock_pressed = true;
-            } else {
+            if (key_pressed_in_mode(k2)) {
               addToReport(k2);
             }
           }
