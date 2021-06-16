@@ -72,16 +72,17 @@ void loop() {
               send_emoji();
               caps_lock_pressed = false;
             } else {
+              // Sending a normal character
+              // HACK: Adding 93 will align k2 with normal ascii for ONLY a-z.
+              // Can use this to send chars to the emoji picker!
+              // Add here to send char on release, add to the "addToReport" line
+              // to send char on press (and repeat).
+              tft.print(char(k2+93));
               removeFromReport(k2);
             }
             if (k2 == 83 || k2 == 71){
-              isSendLeds = true;
-              if (k2 == 83) {
-                leds ^= 2;
-              } else if (k2 == 71) {
-                leds ^= 1;
-              }
-              sendMessage(0xED);
+              // The LED setting code is borked ATM,
+              // so just remove it and do nothing here. 
             }
           } else {
             if (k2 == kCapsLock) {
