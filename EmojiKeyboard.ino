@@ -19,15 +19,6 @@ void setup() {
   // Avoid constantly allocating/deallocating this.
   emoji_name.reserve(26);
 
-  // // Initially the SD system
-  // // SD card is pretty straightforward, a single call...
-  // if(!SD.begin(5, SD_SCK_MHZ(25))) { // ESP32 requires 25 MHz limit
-  //   tft.println(F("SD begin() failed"));
-  //   for(;;); // Fatal error, do not continue
-  // } else {
-  //   tft.println(F("SD card loaded!"));
-  // }
-
   // Give us time to display any remaining debug info.
   delay(1000);
 
