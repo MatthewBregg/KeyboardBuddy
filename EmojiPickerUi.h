@@ -2,8 +2,8 @@
 
 bool caps_lock_pressed = false;
 bool sent_emoji = false;
-bool power_mode = false;
 bool emoji_picker_mode = false;
+bool power_mode = false;
 String emoji_name;
 
 
@@ -15,11 +15,9 @@ void send_emoji(String code){
   Keyboard.press(KEY_LEFT_SHIFT);
   Keyboard.press('u');
 
-  Keyboard.release(KEY_LEFT_CTRL);
-  Keyboard.release(KEY_LEFT_SHIFT);
   Keyboard.release('u');
-  //Keyboard.print("1f4a9"); // Poop
-  //Keyboard.print("1f4AA"); // Strong arm.
+  Keyboard.release(KEY_LEFT_SHIFT);
+  Keyboard.release(KEY_LEFT_CTRL);
   Keyboard.print("1f");
   Keyboard.print(code);
   Keyboard.print(" ");
@@ -35,14 +33,93 @@ void init_emoji_picker() {
   emoji_name = "";
 }
 
-
-
-void add_emoji_picker_key(uint8_t key) {
+char keycode_to_ascii_code(uint8_t key) {
   // HACK: Adding 93 will align k2 with normal ascii for ONLY a-z.
   // Can use this to send chars to the emoji picker!
   // Add here to send char on release, add to the "addToReport" line
   // to send char on press (and repeat).
-  emoji_name += char(key+93);
+  // Remember, 'a' = 97.
+  return char(key+93);
+}
+
+String SEND_POWER_KEY_impl(uint8_t key) {
+  char alpha = keycode_to_ascii_code(key);
+  // https://www.compart.com/en/unicode/search?q=regional#characters
+  switch(alpha) {
+    case 'a':
+      return "1e6";
+    case 'b':
+      return "1e7";
+    case 'c':
+      return "1e8";
+    case 'd':
+      return "1e9";
+    case 'e':
+      return "1ea";
+    case 'f':
+      return "1eb";
+    case 'g':
+      return "1ec";
+    case 'h':
+      return "1ed";
+    case 'i':
+      return "1ee";
+    case 'j':
+      return "1ef";
+    case 'k':
+      return "1f0";
+    case 'l':
+      return "1f1";
+    case 'm':
+      return "1f2";
+    case 'n':
+      return "1f3";
+    case 'o':
+      return "1f4";
+    case 'p':
+      return "1f5";
+    case 'q':
+      return "1f6";
+    case 'r':
+      return "1f7";
+    case 's':
+      return "1f8";
+    case 't':
+      return "1f9";
+    case 'u':
+      return "1fa";
+    case 'v':
+      return "1fb";
+    case 'w':
+      return "1fc";
+    case 'x':
+      return "1fd";
+    case 'y':
+      return "1fe";
+    case 'z':
+      return "1ff";
+    default:
+      return "";
+  }
+}
+
+void SEND_POWER_KEY(uint8_t key) {
+  String emoji = SEND_POWER_KEY_impl(key);
+  if (emoji != "") {
+    send_emoji(emoji);
+    delay(50); 
+    Keyboard.print(" ");
+  }
+}
+
+
+
+void mutate_emoji_picker_keys(uint8_t key) {
+  if (key == kBackSpace) {
+    emoji_name = emoji_name.substring(0,emoji_name.length()-1);
+    return;
+  }
+  emoji_name += keycode_to_ascii_code(key);
 }
 
 const uint8_t max_emojis = 4;

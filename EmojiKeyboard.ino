@@ -28,20 +28,28 @@ void setup() {
 // Filter on key release.
 // Return true to passthrough, false to drop.
 bool key_pressed_in_mode(uint8_t key) {
+  // tft.print(key); tft.print(" ");
   if (key == kCapsLock) {
     caps_lock_pressed = true;
     return false;
   }
   if (caps_lock_pressed && key == kSemiColon) {
     emoji_picker_mode = true;
+    power_mode = false;
     init_emoji_picker();
     render_emoji_picker();
   }
+  if (caps_lock_pressed && key == kEnter) {
+    power_mode = true;
+    emoji_picker_mode = false;
+    clear_display();
+    tft.println("POWER MODE!!!!");
+  }
 
-  if (emoji_picker_mode) {
+  if (emoji_picker_mode || power_mode) {
     return false;
   }
-  // If not in emoji mode, or entering emoji mode, send the code.
+  // If not in emoji/power mode, or entering emoji/power mode, send the code.
   return true;
 }
 
@@ -50,26 +58,33 @@ bool key_pressed_in_mode(uint8_t key) {
 bool key_released_in_mode(uint8_t key) {
   if (key == kCapsLock) {
     caps_lock_pressed = false;
-    if(!emoji_picker_mode) {
-      // If we didn't enter emoji mode, then send our caps lock.
+    if(!emoji_picker_mode && !power_mode) {
+      // If we didn't enter emoji/power mode, then send our caps lock.
       Keyboard.press(KEY_CAPS_LOCK);
     }
     return false;
   }
-  if (key == kESC && emoji_picker_mode) {
+  if (key == kESC && (emoji_picker_mode || power_mode)) {
     emoji_picker_mode = false;
+    power_mode = false;
     clear_display();
+    return false;
   }
   if (key == kEnter && emoji_picker_mode) {
     clear_display();
     emoji_picker_mode = false;
     send_emoji_do_lookup(emoji_name);
     tft.println("Sent emoji!");
+    return false;
   }
   
   if (emoji_picker_mode && key != kSemiColon) {
-    add_emoji_picker_key(key);
+    mutate_emoji_picker_keys(key);
     render_emoji_picker();
+    return false;
+  }
+  if (power_mode && key != kEnter) {
+    SEND_POWER_KEY(key);
     return false;
   }
   return true;
