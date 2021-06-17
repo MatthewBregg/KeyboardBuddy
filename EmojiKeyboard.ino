@@ -73,7 +73,7 @@ bool key_released_in_mode(uint8_t key) {
     clear_display();
     emoji_picker_mode = false;
     send_emoji_do_lookup(emoji_name);
-    tft.println("Sent emoji!");
+    tft.drawBitmap(140/2,220/2,myBitmapthumbs, 100, 100, ILI9341_YELLOW);
     return false;
   }
   
