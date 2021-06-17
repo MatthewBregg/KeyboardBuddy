@@ -42,8 +42,7 @@ bool key_pressed_in_mode(uint8_t key) {
   if (caps_lock_pressed && key == kEnter) {
     power_mode = true;
     emoji_picker_mode = false;
-    clear_display();
-    tft.println("POWER MODE!!!!");
+    render_power_mode();
   }
 
   if (emoji_picker_mode || power_mode) {

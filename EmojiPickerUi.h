@@ -112,6 +112,24 @@ void SEND_POWER_KEY(uint8_t key) {
   }
 }
 
+void render_power_mode() {
+  clear_display();
+  // Render the top box, displaying the currently picked emoji.
+  // Hacky centering.
+  tft.setTextSize(3);
+  tft.println("");
+  tft.setTextSize(40);
+  tft.fillScreen(ILI9341_RED);
+  tft.setTextColor(ILI9341_WHITE); 
+  tft.print("P");
+  for ( int i = 0; i != 5; ++i) {
+    tft.drawFastHLine(0,304+i,240,ILI9341_YELLOW);
+  }
+  for ( int i = 0; i != 5; ++i) {
+    tft.drawFastVLine(215+i,0,320,ILI9341_YELLOW);
+  }
+}
+
 
 
 void mutate_emoji_picker_keys(uint8_t key) {
