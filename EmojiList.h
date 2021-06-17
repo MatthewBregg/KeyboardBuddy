@@ -2,20 +2,28 @@
 struct Emoji {
   String name;
   String unicode;
-  String filepath;
 };
 
 // Keep list sorted.
 Emoji emojis[] {
-  { "climbing", "9d7", "flob" } /* https://www.compart.com/en/unicode/U+1F9D7 */,
-  { "duck", "986", "flob" } /* https://www.compart.com/en/unicode/U+1F986 */,
-  { "guitar", "3b8", "flob" } /* https://www.compart.com/en/unicode/U+1F3B8 */,
-  { "poop", "4a9", "flob" } /* https://www.compart.com/en/unicode/U+1F4A9 */,
-  { "shrug", "937", "flob" } /* https://www.compart.com/en/unicode/U+1F937 */,
-  { "tearslaughing", "923", "flob" } /* https://www.compart.com/en/unicode/U+1F923 */,
-  { "thumbsup", "44d", "flob" } /* https://www.compart.com/en/unicode/U+1F44D */, 
-  { "trainfront", "686", "flob" } /* https://www.compart.com/en/unicode/U+1F686 */,
-  { "trainside", "684", "flob" } /* https://www.compart.com/en/unicode/U+1F684 */,
+  { "bicycle", "6b2"},
+  { "boat", "6f3" }, 
+  { "climbing", "9d7"} /* https://www.compart.com/en/unicode/U+1F9D7 */,
+  { "duck", "986"} /* https://www.compart.com/en/unicode/U+1F986 */,
+  { "fire", "525"}, 
+  { "flexedbicep", "4aa"},
+  { "guitar", "3b8"} /* https://www.compart.com/en/unicode/U+1F3B8 */,
+  { "llama", "999"},
+  { "musicnote", "3b5"},
+  { "partypopper", "389"},
+  { "plane", "6e9"}, 
+  { "poop", "4a9"} /* https://www.compart.com/en/unicode/U+1F4A9 */,
+  { "shrug", "937"} /* https://www.compart.com/en/unicode/U+1F937 */,
+  { "sunglasses", "60e"}, 
+  { "tearslaughing", "923"} /* https://www.compart.com/en/unicode/U+1F923 */,
+  { "thumbsup", "44d"} /* https://www.compart.com/en/unicode/U+1F44D */, 
+  { "trainfront", "686"} /* https://www.compart.com/en/unicode/U+1F686 */,
+  { "trainside", "684"} /* https://www.compart.com/en/unicode/U+1F684 */,
 };
 
 int kMaxEmojiSize = sizeof(emojis)/sizeof(Emoji);
