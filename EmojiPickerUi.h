@@ -149,9 +149,12 @@ void render_emoji_picker() {
   tft.setTextColor(ILI9341_WHITE); 
   tft.print(":");
   tft.println(emoji_name);
+  tft.println("");
 
   // Now render a line to seperate the input from each option.
-  // TODO
+  for ( int i = 0; i != 5; ++i) {
+    tft.drawFastHLine(0,25+i,240,ILI9341_YELLOW);
+  }
 
   // Now render each option.
   int index = index_matching_prefix(emoji_name);
@@ -163,6 +166,11 @@ void render_emoji_picker() {
   for (int i = index; i != end; ++i) {
     // Now render this potential option!
     tft.println(emojis[i].name);
+    tft.println("");
+    // Now render a line to seperate each option.
+    for ( int j = 0; j != 5; ++j) {
+      tft.drawFastHLine(0,75+48*(i-index)+j,240,ILI9341_WHITE);
+    }
   }
   
 
