@@ -108,7 +108,7 @@ void SEND_POWER_KEY(uint8_t key) {
   if (emoji != "") {
     send_emoji(emoji);
     delay(50); 
-    Keyboard.print(" ");
+    send_emoji("386");
   }
 }
 
