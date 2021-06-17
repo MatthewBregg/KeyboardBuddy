@@ -29,8 +29,11 @@ void send_emoji_do_lookup(String emoji_name) {
   send_emoji(emojis[index].unicode);
 }
 
+bool first_render = true;
 void init_emoji_picker() {
   emoji_name = "";
+  clear_display();
+  first_render = true;
 }
 
 char keycode_to_ascii_code(uint8_t key) {
@@ -140,21 +143,38 @@ void mutate_emoji_picker_keys(uint8_t key) {
   emoji_name += keycode_to_ascii_code(key);
 }
 
-const uint8_t max_emojis = 4;
+const uint8_t max_emojis = 5;
+const uint8_t max_line_length_size_3 = 13;
+
+
 // Maybe for a future version render iteratively instead of a full refresh.
 void render_emoji_picker() {
-  clear_display();
   // Render the top box, displaying the currently picked emoji.
+
+  // Prevent the emoji name from clipping with this trick.
+  emoji_name = emoji_name.substring(0,12);
+  tft.setCursor(0,0);
   tft.setTextSize(3);
-  tft.setTextColor(ILI9341_WHITE); 
+  tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK); 
   tft.print(":");
-  tft.println(emoji_name);
-  tft.println("");
+  tft.print(emoji_name);
+
+  // Clear out any potential reminder with spaces.
+  // Another option would be, per row, to keep track of how far we wrote
+  // and only overwrote what we need, but this is already fast enough to
+  // avoid needing that optimization.
+  String spaces;
+  for (int i = 0; i <= (max_line_length_size_3-1 /* Minus 1 to account for the colon*/)
+               - emoji_name.length(); ++i) {
+    spaces += ' ';
+  }
+  tft.println(spaces);
 
   // Now render a line to seperate the input from each option.
-  for ( int i = 0; i != 5; ++i) {
+  for ( int i = 0; i != 5 && first_render; ++i) {
     tft.drawFastHLine(0,25+i,240,ILI9341_YELLOW);
   }
+
 
   // Now render each option.
   int index = index_matching_prefix(emoji_name);
@@ -165,14 +185,21 @@ void render_emoji_picker() {
   int end = min(kMaxEmojiSize,index+max_emojis);
   for (int i = index; i != end; ++i) {
     // Now render this potential option!
-    tft.println(emojis[i].name);
+    String& name = emojis[i].name;
+    tft.print(name);
+    spaces = "";
+    for (int x = 0; x < (max_line_length_size_3 - name.length()); ++x) {
+      spaces += ' ';
+    }
+    tft.println(spaces);
+    // Add more space for a line.
     tft.println("");
     // Now render a line to seperate each option.
-    for ( int j = 0; j != 5; ++j) {
+    for ( int j = 0; j != 5 && first_render; ++j) {
       tft.drawFastHLine(0,75+48*(i-index)+j,240,ILI9341_WHITE);
     }
   }
-  
+  first_render = false; 
 
 }
 
