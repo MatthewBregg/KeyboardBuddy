@@ -22,6 +22,7 @@ Emoji emojis[] {
   { "sunglasses", "60e"}, 
   { "tearslaughing", "923"} /* https://www.compart.com/en/unicode/U+1F923 */,
   { "thumbsup", "44d"} /* https://www.compart.com/en/unicode/U+1F44D */, 
+  { "thumbsdown", "44e"} /* https://www.compart.com/en/unicode/U+1F44D */, 
   { "trainfront", "686"} /* https://www.compart.com/en/unicode/U+1F686 */,
   { "trainside", "684"} /* https://www.compart.com/en/unicode/U+1F684 */,
 };
