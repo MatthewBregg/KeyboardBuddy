@@ -3,6 +3,7 @@
 #include "LoadImages.h"
 #include "EmojiPickerUi.h"
 
+bool print_serial = true;
 
 void setup() {
   tft.begin();
@@ -18,6 +19,10 @@ void setup() {
 
   // Avoid constantly allocating/deallocating this.
   emoji_name.reserve(26);
+
+  if (print_serial) {
+    Serial.begin(115200);
+  }
 
   // Give us time to display any remaining debug info.
   delay(1000);
@@ -90,6 +95,11 @@ bool key_released_in_mode(uint8_t key) {
 }
 
 void loop() {
+  if(print_serial) {
+    // If we are debugging with serial, then empty the serial buffer here.
+    while (! Serial) yield();
+  }
+
   uint8_t k = getScancode();
   uint8_t k2; 
   if (k) {

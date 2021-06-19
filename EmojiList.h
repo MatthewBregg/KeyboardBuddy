@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include<algorithm>
+
 
 struct Emoji {
   char name[13];
@@ -1304,17 +1306,14 @@ const PROGMEM Emoji emojis[] = {
 };
 
 int kMaxEmojiSize = sizeof(emojis)/sizeof(Emoji);
-    
+bool operator< (const  Emoji& a, const String& b) {return strcmp(a.name ,  b.c_str()) < 0;}   
+bool operator> (const  Emoji& a, const String& b) {return strcmp(a.name , b.c_str()) > 0;}   
 
 // Returns a matching prefix, or -1 if no prefix matches.
 // Remember an empty string will always return i = 0.
 int index_matching_prefix(String prefix) {
-  for (int i = 0; i != kMaxEmojiSize; ++i) {
-    if (String(emojis[i].name).startsWith(prefix)) {
-      return i;
-    }
-  }
-  return -1;
+  auto low = std::lower_bound (emojis, emojis+kMaxEmojiSize, prefix);
+  return low-emojis;
 }
 
 // 'thumbs', 100x100px
