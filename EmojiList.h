@@ -1311,9 +1311,12 @@ bool operator> (const  Emoji& a, const String& b) {return strcmp(a.name , b.c_st
 
 // Returns a matching prefix, or -1 if no prefix matches.
 // Remember an empty string will always return i = 0.
+// Using binary search keeps the time to search < 1 ms, although even
+// linear search only took 21 ms for a list of this size, so not a big deal regardless.
 int index_matching_prefix(String prefix) {
   auto low = std::lower_bound (emojis, emojis+kMaxEmojiSize, prefix);
   return low-emojis;
+
 }
 
 // 'thumbs', 100x100px
