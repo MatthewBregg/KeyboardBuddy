@@ -33,9 +33,7 @@ void send_emoji(String code){
   Keyboard.press(KEY_LEFT_SHIFT);
   Keyboard.press('u');
 
-  Keyboard.release('u');
-  Keyboard.release(KEY_LEFT_SHIFT);
-  Keyboard.release(KEY_LEFT_CTRL);
+  Keyboard.releaseAll();
   Keyboard.print("1f");
   Keyboard.print(code);
   Keyboard.print(" ");
