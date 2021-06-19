@@ -29,6 +29,8 @@ String emoji_name;
 // Send CTRL/SHIFT/U combo press, then release, and then send the code followed by space. 
 // See codes from https://unicode-table.com/en/1F4AA/.
 void send_emoji(String code){
+  Serial.print("Code sent: ");
+  Serial.println(code);
   Keyboard.press(KEY_LEFT_CTRL);
   Keyboard.press(KEY_LEFT_SHIFT);
   Keyboard.press('u');
@@ -46,8 +48,10 @@ void send_emoji_do_lookup(String emoji_name) {
 }
 
 bool first_render = true;
+int last_index = -1;
 void init_emoji_picker() {
   emoji_name = "";
+  last_index = -1;
   clear_display();
   first_render = true;
 }
@@ -188,16 +192,17 @@ void render_emoji_picker() {
 
   // Now render a line to seperate the input from each option.
   for ( int i = 0; i != 5 && first_render; ++i) {
-    tft.drawFastHLine(0,25+i,240,ILI9341_YELLOW);
+    tft.drawFastHLine(20,25+i,240,ILI9341_YELLOW);
   }
 
 
   // Now render each option.
   int index = index_matching_prefix(emoji_name);
-  if ( index == -1 ) {
+  if ( index == last_index ) {
     // Nothing to render, return;
     return;
   }
+  last_index = index;
   int end = min(kMaxEmojiSize,index+max_emojis);
   for (int i = index; i != end; ++i) {
     // Now render this potential option!
