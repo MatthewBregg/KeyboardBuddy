@@ -203,7 +203,7 @@ void render_emoji_picker() {
   int end = min(kMaxEmojiSize,index+max_emojis);
   for (int i = index; i != end; ++i) {
     // Now render this potential option!
-    String& name = emojis[i].name;
+    const String& name = emojis[i].name;
     tft.print(name);
     spaces = "";
     for (int x = 0; x < (max_line_length_size_3 - name.length()); ++x) {
