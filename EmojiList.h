@@ -1309,14 +1309,24 @@ int kMaxEmojiSize = sizeof(emojis)/sizeof(Emoji);
 bool operator< (const  Emoji& a, const String& b) {return strcmp(a.name ,  b.c_str()) < 0;}   
 bool operator> (const  Emoji& a, const String& b) {return strcmp(a.name , b.c_str()) > 0;}   
 
-// Returns a matching prefix, or -1 if no prefix matches.
+// Returns a matching prefix index, or -1.
 // Remember an empty string will always return i = 0.
 // Using binary search keeps the time to search < 1 ms, although even
 // linear search only took 21 ms for a list of this size, so not a big deal regardless.
 int index_matching_prefix(String prefix) {
+  // Note: If something beyond array is given (like all zzz),
+  // then will return kMaxEmojiSize, aka out of bounds.
   auto low = std::lower_bound (emojis, emojis+kMaxEmojiSize, prefix);
-  return low-emojis;
 
+  // If out of bounds, no match.
+  if (low-emojis == kMaxEmojiSize) {
+    return -1;
+  }
+  if (String(low->name).startsWith(prefix)) {
+    return low-emojis;
+  }
+  // Otherwise non exact match, return -1.
+  return -1;
 }
 
 // 'thumbs', 100x100px

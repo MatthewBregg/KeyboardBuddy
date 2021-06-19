@@ -3,7 +3,7 @@
 #include "LoadImages.h"
 #include "EmojiPickerUi.h"
 
-bool print_serial = true;
+bool print_serial = false;
 
 void setup() {
   tft.begin();
