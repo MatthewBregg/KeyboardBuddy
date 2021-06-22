@@ -23,3 +23,10 @@
 * PS2 Code
   Pulled and modified from github snippet here.
   https://gist.github.com/DorianRudolph/ca283dfdfd185bc812b7
+
+* Roadmap
+  * Improve the UI: Better incremental update (treat as a grid maybe), handle names longer than 12 chars (scrolling text), tab to rotate through which row is selected/tab complete, bitmap previews?
+  * Clean up code, ideally the PS2 code should be a state machine with objects instead of a jumble of if statements and booleans
+  * Design a 3d printable case for it beyond what I hacked up in one night. Ideally enclose the whole thing nicely!
+  * Blutooth support of course!!!
+  
