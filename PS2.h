@@ -35,7 +35,6 @@ KeyReport report;
 uint8_t leds;
 bool isSendLeds;
 
-// Test
 
 void PS2Interrupt(void) {
 
