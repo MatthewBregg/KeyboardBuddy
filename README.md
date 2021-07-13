@@ -29,4 +29,10 @@
   * Clean up code, ideally the PS2 code should be a state machine with objects instead of a jumble of if statements and booleans
   * Design a 3d printable case for it beyond what I hacked up in one night. Ideally enclose the whole thing nicely!
   * Blutooth support of course!!!
-  
+
+* Adrduino IDE Setup:
+  * Adafruit Feather M0: https://learn.adafruit.com/adafruit-feather-m0-wifi-atwinc1500/setup
+  * Adafruit GFX (In the library manager!): https://github.com/adafruit/Adafruit-GFX-Library
+  * Adafruit_ILI9341 (In the library manager!): https://github.com/adafruit/Adafruit_ILI9341
+  * Keyboard (In the library manager!): https://www.arduino.cc/reference/en/language/functions/usb/keyboard/
+ 
